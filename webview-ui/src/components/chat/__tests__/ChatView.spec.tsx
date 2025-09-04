@@ -97,23 +97,22 @@ vi.mock("@src/components/welcome/RooCloudCTA", () => ({
 
 // Mock QueuedMessages component
 vi.mock("../QueuedMessages", () => ({
-	QueuedMessages: function MockQueuedMessages({
-		queue = [],
-		onRemove,
+	default: function MockQueuedMessages({
+		messages = [],
+		onRemoveMessage,
 	}: {
-		queue?: Array<{ id: string; text: string; images?: string[] }>
-		onRemove?: (index: number) => void
-		onUpdate?: (index: number, newText: string) => void
+		messages?: Array<{ id: string; text: string; images?: string[] }>
+		onRemoveMessage?: (id: string) => void
 	}) {
-		if (!queue || queue.length === 0) {
+		if (!messages || messages.length === 0) {
 			return null
 		}
 		return (
 			<div data-testid="queued-messages">
-				{queue.map((msg, index) => (
+				{messages.map((msg) => (
 					<div key={msg.id}>
 						<span>{msg.text}</span>
-						<button aria-label="Remove message" onClick={() => onRemove?.(index)}>
+						<button aria-label="Remove message" onClick={() => onRemoveMessage?.(msg.id)}>
 							Remove
 						</button>
 					</div>

@@ -176,8 +176,7 @@ export const mergeExtensionState = (prevState: ExtensionState, newState: Extensi
 }
 
 export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-	const [state, setState] = useState<ExtensionState>({
-		apiConfiguration: {},
+	const [state, setState] = useState<ExtensionState & { organizationAllowList?: OrganizationAllowList }>({
 		version: "",
 		clineMessages: [],
 		taskHistory: [],

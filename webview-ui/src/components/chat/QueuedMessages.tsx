@@ -1,13 +1,9 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { QueuedMessage } from "@roo-code/types"
-
-import { Button } from "@src/components/ui"
-
 import Thumbnails from "../common/Thumbnails"
-
+import { QueuedMessage } from "@roo-code/types"
 import { Mention } from "./Mention"
+import { Button } from "@src/components/ui"
 
 interface QueuedMessagesProps {
 	queue: QueuedMessage[]
@@ -15,7 +11,7 @@ interface QueuedMessagesProps {
 	onUpdate: (index: number, newText: string) => void
 }
 
-export const QueuedMessages = ({ queue, onRemove, onUpdate }: QueuedMessagesProps) => {
+const QueuedMessages: React.FC<QueuedMessagesProps> = ({ queue, onRemove, onUpdate }) => {
 	const { t } = useTranslation("chat")
 	const [editingStates, setEditingStates] = useState<Record<string, { isEditing: boolean; value: string }>>({})
 
@@ -112,3 +108,5 @@ export const QueuedMessages = ({ queue, onRemove, onUpdate }: QueuedMessagesProp
 		</div>
 	)
 }
+
+export default QueuedMessages

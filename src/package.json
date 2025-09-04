@@ -3,7 +3,7 @@
 	"displayName": "%extension.displayName%",
 	"description": "%extension.description%",
 	"publisher": "RooVeterinaryInc",
-	"version": "3.26.4",
+	"version": "0.1.2",
 	"icon": "assets/icons/icon.png",
 	"galleryBanner": {
 		"color": "#617A91",
@@ -91,19 +91,9 @@
 				"icon": "$(history)"
 			},
 			{
-				"command": "roo-cline.marketplaceButtonClicked",
-				"title": "%command.marketplace.title%",
-				"icon": "$(extensions)"
-			},
-			{
 				"command": "roo-cline.popoutButtonClicked",
 				"title": "%command.openInEditor.title%",
 				"icon": "$(link-external)"
-			},
-			{
-				"command": "roo-cline.cloudButtonClicked",
-				"title": "%command.cloud.title%",
-				"icon": "$(cloud)"
 			},
 			{
 				"command": "roo-cline.settingsButtonClicked",
@@ -224,18 +214,8 @@
 					"when": "view == roo-cline.SidebarProvider"
 				},
 				{
-					"command": "roo-cline.marketplaceButtonClicked",
-					"group": "navigation@2",
-					"when": "view == roo-cline.SidebarProvider"
-				},
-				{
 					"command": "roo-cline.settingsButtonClicked",
 					"group": "navigation@3",
-					"when": "view == roo-cline.SidebarProvider"
-				},
-				{
-					"command": "roo-cline.cloudButtonClicked",
-					"group": "navigation@4",
 					"when": "view == roo-cline.SidebarProvider"
 				},
 				{
@@ -266,18 +246,8 @@
 					"when": "activeWebviewPanelId == roo-cline.TabPanelProvider"
 				},
 				{
-					"command": "roo-cline.marketplaceButtonClicked",
-					"group": "navigation@2",
-					"when": "activeWebviewPanelId == roo-cline.TabPanelProvider"
-				},
-				{
 					"command": "roo-cline.settingsButtonClicked",
 					"group": "navigation@3",
-					"when": "activeWebviewPanelId == roo-cline.TabPanelProvider"
-				},
-				{
-					"command": "roo-cline.cloudButtonClicked",
-					"group": "navigation@4",
 					"when": "activeWebviewPanelId == roo-cline.TabPanelProvider"
 				},
 				{
@@ -400,13 +370,6 @@
 					"type": "boolean",
 					"default": false,
 					"description": "%settings.newTaskRequireTodos.description%"
-				},
-				"roo-cline.codeIndex.embeddingBatchSize": {
-					"type": "number",
-					"default": 60,
-					"minimum": 1,
-					"maximum": 200,
-					"description": "%settings.codeIndex.embeddingBatchSize.description%"
 				}
 			}
 		}

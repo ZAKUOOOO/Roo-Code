@@ -41,94 +41,94 @@ const Announcement = ({ hideAnnouncement }: AnnouncementProps) => {
 				<DialogHeader>
 					<DialogTitle>{t("chat:announcement.title", { version: Package.version })}</DialogTitle>
 				</DialogHeader>
-				<div>
-					<div className="space-y-2">
-						<div>
+				<div className="space-y-4">
+					{/* Version Description */}
+					<div className="text-sm text-vscode-descriptionForeground">
+						<Trans
+							i18nKey="chat:announcement.description"
+							components={{
+								bold: <b className="text-vscode-foreground" />,
+							}}
+						/>
+					</div>
+
+					{/* Features List */}
+					<div>
+						<h4 className="text-sm font-semibold mb-2 text-vscode-foreground">
+							{t("chat:announcement.whatsNew")}
+						</h4>
+						<div className="space-y-2">
+							<div className="text-sm flex items-start gap-2">
+								<span className="text-base">1️⃣</span>
+								<Trans
+									i18nKey="chat:announcement.feature1"
+									components={{
+										bold: <b className="text-vscode-foreground" />,
+									}}
+								/>
+							</div>
+							<div className="text-sm flex items-start gap-2">
+								<span className="text-base">2️⃣</span>
+								<Trans
+									i18nKey="chat:announcement.feature2"
+									components={{
+										bold: <b className="text-vscode-foreground" />,
+									}}
+								/>
+							</div>
+							<div className="text-sm flex items-start gap-2">
+								<span className="text-base">3️⃣</span>
+								<Trans
+									i18nKey="chat:announcement.feature3"
+									components={{
+										bold: <b className="text-vscode-foreground" />,
+									}}
+								/>
+							</div>
+							<div className="text-sm flex items-start gap-2">
+								<span className="text-base">4️⃣</span>
+								<Trans
+									i18nKey="chat:announcement.feature4"
+									components={{
+										bold: <b className="text-vscode-foreground" />,
+									}}
+								/>
+							</div>
+							<div className="text-sm flex items-start gap-2">
+								<span className="text-base">5️⃣</span>
+								<Trans
+									i18nKey="chat:announcement.feature5"
+									components={{
+										bold: <b className="text-vscode-foreground" />,
+									}}
+								/>
+							</div>
+						</div>
+					</div>
+
+					{/* Slogan */}
+					<div className="text-center py-2 border-t border-vscode-widget-border">
+						<div className="text-sm font-medium text-vscode-foreground">
 							<Trans
-								i18nKey="chat:announcement.stealthModel.feature"
+								i18nKey="chat:announcement.slogan"
 								components={{
 									bold: <b />,
-									code: <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded" />,
 								}}
 							/>
 						</div>
 					</div>
 
-					<div className="mt-4">
-						<Trans
-							i18nKey="chat:announcement.stealthModel.note"
-							components={{
-								bold: <b />,
-								code: <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded" />,
+					{/* Close Button */}
+					<div className="flex justify-end">
+						<Button
+							variant="secondary"
+							onClick={() => {
+								setOpen(false)
+								hideAnnouncement()
 							}}
-						/>
-					</div>
-
-					<div className="mt-4">
-						{!cloudIsAuthenticated ? (
-							<div className="space-y-3">
-								<div className="text-sm w-full">
-									<Trans
-										i18nKey="chat:announcement.stealthModel.selectModel"
-										components={{
-											code: <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded" />,
-											settingsLink: (
-												<VSCodeLink
-													href="#"
-													onClick={(e) => {
-														e.preventDefault()
-														setOpen(false)
-														hideAnnouncement()
-														window.postMessage(
-															{
-																type: "action",
-																action: "settingsButtonClicked",
-																values: { section: "provider" },
-															},
-															"*",
-														)
-													}}
-												/>
-											),
-										}}
-									/>
-								</div>
-								<Button
-									onClick={() => {
-										vscode.postMessage({ type: "rooCloudSignIn" })
-									}}
-									className="w-full">
-									{t("chat:announcement.stealthModel.connectButton")}
-								</Button>
-							</div>
-						) : (
-							<div className="text-sm w-full">
-								<Trans
-									i18nKey="chat:announcement.stealthModel.selectModel"
-									components={{
-										code: <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded" />,
-										settingsLink: (
-											<VSCodeLink
-												href="#"
-												onClick={(e) => {
-													e.preventDefault()
-													setOpen(false)
-													hideAnnouncement()
-													window.postMessage(
-														{
-															type: "action",
-															action: "settingsButtonClicked",
-															values: { section: "provider" },
-														},
-														"*",
-													)
-												}}
-											/>
-										),
-									}}
-								/>
-							</div>
-						)}
+							className="px-4">
+							{t("chat:announcement.hideButton")}
+						</Button>
 					</div>
 				</div>
 			</DialogContent>

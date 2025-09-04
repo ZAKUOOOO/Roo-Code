@@ -79,14 +79,14 @@ export interface SettingsViewRef {
 const sectionNames = [
 	"providers",
 	"autoApprove",
-	"browser",
-	"checkpoints",
-	"notifications",
+	// "browser",
+	// "checkpoints",
+	// "notifications",
 	"contextManagement",
-	"terminal",
-	"prompts",
-	"experimental",
-	"language",
+	// "terminal",
+	// "prompts",
+	// "experimental",
+	// "language",
 	"about",
 ] as const
 
@@ -435,14 +435,14 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 		() => [
 			{ id: "providers", icon: Webhook },
 			{ id: "autoApprove", icon: CheckCheck },
-			{ id: "browser", icon: SquareMousePointer },
-			{ id: "checkpoints", icon: GitBranch },
-			{ id: "notifications", icon: Bell },
+			// { id: "browser", icon: SquareMousePointer },
+			// { id: "checkpoints", icon: GitBranch },
+			// { id: "notifications", icon: Bell },
 			{ id: "contextManagement", icon: Database },
-			{ id: "terminal", icon: SquareTerminal },
-			{ id: "prompts", icon: MessageSquare },
-			{ id: "experimental", icon: FlaskConical },
-			{ id: "language", icon: Globe },
+			// { id: "terminal", icon: SquareTerminal },
+			// { id: "prompts", icon: MessageSquare },
+			// { id: "experimental", icon: FlaskConical },
+			// { id: "language", icon: Globe },
 			{ id: "about", icon: Info },
 		],
 		[], // No dependencies needed now
@@ -618,13 +618,13 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 										})
 									}
 								/>
-								<ApiOptions
+								{/* <ApiOptions
 									uriScheme={uriScheme}
 									apiConfiguration={apiConfiguration}
 									setApiConfigurationField={setApiConfigurationField}
 									errorMessage={errorMessage}
 									setErrorMessage={setErrorMessage}
-								/>
+								/>*/}
 							</Section>
 						</div>
 					)}
@@ -655,37 +655,6 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 						/>
 					)}
 
-					{/* Browser Section */}
-					{activeTab === "browser" && (
-						<BrowserSettings
-							browserToolEnabled={browserToolEnabled}
-							browserViewportSize={browserViewportSize}
-							screenshotQuality={screenshotQuality}
-							remoteBrowserHost={remoteBrowserHost}
-							remoteBrowserEnabled={remoteBrowserEnabled}
-							setCachedStateField={setCachedStateField}
-						/>
-					)}
-
-					{/* Checkpoints Section */}
-					{activeTab === "checkpoints" && (
-						<CheckpointSettings
-							enableCheckpoints={enableCheckpoints}
-							setCachedStateField={setCachedStateField}
-						/>
-					)}
-
-					{/* Notifications Section */}
-					{activeTab === "notifications" && (
-						<NotificationSettings
-							ttsEnabled={ttsEnabled}
-							ttsSpeed={ttsSpeed}
-							soundEnabled={soundEnabled}
-							soundVolume={soundVolume}
-							setCachedStateField={setCachedStateField}
-						/>
-					)}
-
 					{/* Context Management Section */}
 					{activeTab === "contextManagement" && (
 						<ContextManagementSettings
@@ -705,57 +674,6 @@ const SettingsView = forwardRef<SettingsViewRef, SettingsViewProps>(({ onDone, t
 							writeDelayMs={writeDelayMs}
 							setCachedStateField={setCachedStateField}
 						/>
-					)}
-
-					{/* Terminal Section */}
-					{activeTab === "terminal" && (
-						<TerminalSettings
-							terminalOutputLineLimit={terminalOutputLineLimit}
-							terminalOutputCharacterLimit={terminalOutputCharacterLimit}
-							terminalShellIntegrationTimeout={terminalShellIntegrationTimeout}
-							terminalShellIntegrationDisabled={terminalShellIntegrationDisabled}
-							terminalCommandDelay={terminalCommandDelay}
-							terminalPowershellCounter={terminalPowershellCounter}
-							terminalZshClearEolMark={terminalZshClearEolMark}
-							terminalZshOhMy={terminalZshOhMy}
-							terminalZshP10k={terminalZshP10k}
-							terminalZdotdir={terminalZdotdir}
-							terminalCompressProgressBar={terminalCompressProgressBar}
-							setCachedStateField={setCachedStateField}
-						/>
-					)}
-
-					{/* Prompts Section */}
-					{activeTab === "prompts" && (
-						<PromptsSettings
-							customSupportPrompts={customSupportPrompts || {}}
-							setCustomSupportPrompts={setCustomSupportPromptsField}
-							includeTaskHistoryInEnhance={includeTaskHistoryInEnhance}
-							setIncludeTaskHistoryInEnhance={(value) =>
-								setCachedStateField("includeTaskHistoryInEnhance", value)
-							}
-						/>
-					)}
-
-					{/* Experimental Section */}
-					{activeTab === "experimental" && (
-						<ExperimentalSettings
-							setExperimentEnabled={setExperimentEnabled}
-							experiments={experiments}
-							apiConfiguration={apiConfiguration}
-							setApiConfigurationField={setApiConfigurationField}
-							openRouterImageApiKey={openRouterImageApiKey as string | undefined}
-							openRouterImageGenerationSelectedModel={
-								openRouterImageGenerationSelectedModel as string | undefined
-							}
-							setOpenRouterImageApiKey={setOpenRouterImageApiKey}
-							setImageGenerationSelectedModel={setImageGenerationSelectedModel}
-						/>
-					)}
-
-					{/* Language Section */}
-					{activeTab === "language" && (
-						<LanguageSettings language={language || "en"} setCachedStateField={setCachedStateField} />
 					)}
 
 					{/* About Section */}

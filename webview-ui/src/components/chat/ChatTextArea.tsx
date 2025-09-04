@@ -1194,7 +1194,7 @@ export const ChatTextArea = forwardRef<HTMLTextAreaElement, ChatTextAreaProps>(
 							</StandardTooltip>
 						)}
 						<SlashCommandsPopover />
-						<IndexingStatusBadge />
+						{/* <IndexingStatusBadge /> */}
 						<StandardTooltip content={t("chat:addImages")}>
 							<button
 								aria-label={t("chat:addImages")}

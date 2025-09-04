@@ -169,12 +169,12 @@ export const AutoApproveSettings = ({
 						onToggle={(key, value) => setCachedStateField(key, value)}
 					/>
 
-					<MaxLimitInputs
+					{/* <MaxLimitInputs
 						allowedMaxRequests={allowedMaxRequests}
 						allowedMaxCost={allowedMaxCost}
 						onMaxRequestsChange={(value) => setCachedStateField("allowedMaxRequests", value)}
 						onMaxCostChange={(value) => setCachedStateField("allowedMaxCost", value)}
-					/>
+					/> */}
 				</div>
 
 				{/* ADDITIONAL SETTINGS */}

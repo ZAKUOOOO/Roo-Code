@@ -21,7 +21,7 @@
 		"discardButton": "放弃更改"
 	},
 	"sections": {
-		"providers": "提供商",
+		"providers": "模型选择",
 		"autoApprove": "自动批准",
 		"browser": "计算机交互",
 		"checkpoints": "存档点",
@@ -31,7 +31,7 @@
 		"prompts": "提示词",
 		"experimental": "实验性",
 		"language": "语言",
-		"about": "关于 Roo Code"
+		"about": "关于苏小码"
 	},
 	"prompts": {
 		"description": "配置用于快速操作的支持提示词，如增强提示词、解释代码和修复问题。这些提示词帮助 Roo 为常见开发任务提供更好的支持。"
@@ -786,7 +786,7 @@
 		"useCustomModel": "使用自定义：{{modelId}}"
 	},
 	"footer": {
-		"feedback": "如果您有任何问题或反馈，请随时在 <githubLink>github.com/RooCodeInc/Roo-Code</githubLink> 上提出问题或加入 <redditLink>reddit.com/r/RooCode</redditLink> 或 <discordLink>discord.gg/roocode</discordLink>",
+		"feedback": "如果您有任何问题或反馈，请联系\n邮箱：zhuhaopeng@js.mobile.com\n电话：13905182922",
 		"telemetry": {
 			"label": "允许匿名数据收集",
 			"description": "匿名收集错误报告和使用数据（不含代码/提示/个人信息），详情见隐私政策"

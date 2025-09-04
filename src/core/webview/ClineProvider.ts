@@ -47,7 +47,7 @@ import { Package } from "../../shared/package"
 import { findLast } from "../../shared/array"
 import { supportPrompt } from "../../shared/support-prompt"
 import { GlobalFileNames } from "../../shared/globalFileNames"
-import type { ExtensionMessage, ExtensionState, MarketplaceInstalledMetadata } from "../../shared/ExtensionMessage"
+import { ExtensionMessage, MarketplaceInstalledMetadata } from "../../shared/ExtensionMessage"
 import { Mode, defaultModeSlug, getModeBySlug } from "../../shared/modes"
 import { experimentDefault } from "../../shared/experiments"
 import { formatLanguage } from "../../shared/language"
@@ -184,7 +184,6 @@ export class ClineProvider
 			const onTaskInteractive = (taskId: string) => this.emit(RooCodeEventName.TaskInteractive, taskId)
 			const onTaskResumable = (taskId: string) => this.emit(RooCodeEventName.TaskResumable, taskId)
 			const onTaskIdle = (taskId: string) => this.emit(RooCodeEventName.TaskIdle, taskId)
-			const onTaskUserMessage = (taskId: string) => this.emit(RooCodeEventName.TaskUserMessage, taskId)
 
 			// Attach the listeners.
 			instance.on(RooCodeEventName.TaskStarted, onTaskStarted)
@@ -196,7 +195,6 @@ export class ClineProvider
 			instance.on(RooCodeEventName.TaskInteractive, onTaskInteractive)
 			instance.on(RooCodeEventName.TaskResumable, onTaskResumable)
 			instance.on(RooCodeEventName.TaskIdle, onTaskIdle)
-			instance.on(RooCodeEventName.TaskUserMessage, onTaskUserMessage)
 
 			// Store the cleanup functions for later removal.
 			this.taskEventListeners.set(instance, [
@@ -209,18 +207,13 @@ export class ClineProvider
 				() => instance.off(RooCodeEventName.TaskInteractive, onTaskInteractive),
 				() => instance.off(RooCodeEventName.TaskResumable, onTaskResumable),
 				() => instance.off(RooCodeEventName.TaskIdle, onTaskIdle),
-				() => instance.off(RooCodeEventName.TaskUserMessage, onTaskUserMessage),
 			])
 		}
 
 		// Initialize Roo Code Cloud profile sync.
-		if (CloudService.hasInstance()) {
-			this.initializeCloudProfileSync().catch((error) => {
-				this.log(`Failed to initialize cloud profile sync: ${error}`)
-			})
-		} else {
-			this.log("CloudService not ready, deferring cloud profile sync")
-		}
+		this.initializeCloudProfileSync().catch((error) => {
+			this.log(`Failed to initialize cloud profile sync: ${error}`)
+		})
 	}
 
 	/**
@@ -307,25 +300,6 @@ export class ClineProvider
 			}
 		} catch (error) {
 			this.log(`Error syncing cloud profiles: ${error}`)
-		}
-	}
-
-	/**
-	 * Initialize cloud profile synchronization when CloudService is ready
-	 * This method is called externally after CloudService has been initialized
-	 */
-	public async initializeCloudProfileSyncWhenReady(): Promise<void> {
-		try {
-			if (CloudService.hasInstance() && CloudService.instance.isAuthenticated()) {
-				await this.syncCloudProfiles()
-			}
-
-			if (CloudService.hasInstance()) {
-				CloudService.instance.off("settings-updated", this.handleCloudSettingsUpdate)
-				CloudService.instance.on("settings-updated", this.handleCloudSettingsUpdate)
-			}
-		} catch (error) {
-			this.log(`Failed to initialize cloud profile sync when ready: ${error}`)
 		}
 	}
 
@@ -1213,16 +1187,14 @@ export class ClineProvider
 	// OpenRouter
 
 	async handleOpenRouterCallback(code: string) {
-		let { apiConfiguration, currentApiConfigName = "default" } = await this.getState()
+		let { apiConfiguration, currentApiConfigName } = await this.getState()
 
 		let apiKey: string
-
 		try {
 			const baseUrl = apiConfiguration.openRouterBaseUrl || "https://openrouter.ai/api/v1"
-			// Extract the base domain for the auth endpoint.
+			// Extract the base domain for the auth endpoint
 			const baseUrlDomain = baseUrl.match(/^(https?:\/\/[^\/]+)/)?.[1] || "https://openrouter.ai"
 			const response = await axios.post(`${baseUrlDomain}/api/v1/auth/keys`, { code })
-
 			if (response.data && response.data.key) {
 				apiKey = response.data.key
 			} else {
@@ -1232,7 +1204,6 @@ export class ClineProvider
 			this.log(
 				`Error exchanging code for API key: ${JSON.stringify(error, Object.getOwnPropertyNames(error), 2)}`,
 			)
-
 			throw error
 		}
 
@@ -1250,10 +1221,8 @@ export class ClineProvider
 
 	async handleGlamaCallback(code: string) {
 		let apiKey: string
-
 		try {
 			const response = await axios.post("https://glama.ai/api/gateway/v1/auth/exchange-code", { code })
-
 			if (response.data && response.data.apiKey) {
 				apiKey = response.data.apiKey
 			} else {
@@ -1263,11 +1232,10 @@ export class ClineProvider
 			this.log(
 				`Error exchanging code for API key: ${JSON.stringify(error, Object.getOwnPropertyNames(error), 2)}`,
 			)
-
 			throw error
 		}
 
-		const { apiConfiguration, currentApiConfigName = "default" } = await this.getState()
+		const { apiConfiguration, currentApiConfigName } = await this.getState()
 
 		const newConfiguration: ProviderSettings = {
 			...apiConfiguration,
@@ -1282,7 +1250,7 @@ export class ClineProvider
 	// Requesty
 
 	async handleRequestyCallback(code: string) {
-		let { apiConfiguration, currentApiConfigName = "default" } = await this.getState()
+		let { apiConfiguration, currentApiConfigName } = await this.getState()
 
 		const newConfiguration: ProviderSettings = {
 			...apiConfiguration,
@@ -1540,7 +1508,7 @@ export class ClineProvider
 		}
 	}
 
-	async getStateToPostToWebview(): Promise<ExtensionState> {
+	async getStateToPostToWebview() {
 		const {
 			apiConfiguration,
 			lastShownAnnouncementId,
@@ -1630,7 +1598,6 @@ export class ClineProvider
 			remoteControlEnabled,
 			openRouterImageApiKey,
 			openRouterImageGenerationSelectedModel,
-			openRouterUseMiddleOutTransform,
 		} = await this.getState()
 
 		const telemetryKey = process.env.POSTHOG_API_KEY
@@ -1668,7 +1635,6 @@ export class ClineProvider
 				: undefined,
 			clineMessages: this.getCurrentTask()?.clineMessages || [],
 			currentTaskTodos: this.getCurrentTask()?.todoList || [],
-			messageQueue: this.getCurrentTask()?.messageQueueService?.messages,
 			taskHistory: (taskHistory || [])
 				.filter((item: HistoryItem) => item.ts && item.task)
 				.sort((a: HistoryItem, b: HistoryItem) => b.ts - a.ts),
@@ -1765,7 +1731,6 @@ export class ClineProvider
 			remoteControlEnabled,
 			openRouterImageApiKey,
 			openRouterImageGenerationSelectedModel,
-			openRouterUseMiddleOutTransform,
 		}
 	}
 
@@ -1775,17 +1740,7 @@ export class ClineProvider
 	 * https://www.eliostruyf.com/devhack-code-extension-storage-options/
 	 */
 
-	async getState(): Promise<
-		Omit<
-			ExtensionState,
-			| "clineMessages"
-			| "renderContext"
-			| "hasOpenedModeSelector"
-			| "version"
-			| "shouldShowAnnouncement"
-			| "hasSystemPromptOverride"
-		>
-	> {
+	async getState() {
 		const stateValues = this.contextProxy.getValues()
 		const customModes = await this.customModesManager.getCustomModes()
 
@@ -1853,7 +1808,7 @@ export class ClineProvider
 			)
 		}
 
-		// Return the same structure as before.
+		// Return the same structure as before
 		return {
 			apiConfiguration: providerSettings,
 			lastShownAnnouncementId: stateValues.lastShownAnnouncementId,
@@ -1877,7 +1832,7 @@ export class ClineProvider
 			allowedMaxCost: stateValues.allowedMaxCost,
 			autoCondenseContext: stateValues.autoCondenseContext ?? true,
 			autoCondenseContextPercent: stateValues.autoCondenseContextPercent ?? 100,
-			taskHistory: stateValues.taskHistory ?? [],
+			taskHistory: stateValues.taskHistory,
 			allowedCommands: stateValues.allowedCommands,
 			deniedCommands: stateValues.deniedCommands,
 			soundEnabled: stateValues.soundEnabled ?? false,
@@ -1924,7 +1879,7 @@ export class ClineProvider
 			customModes,
 			maxOpenTabsContext: stateValues.maxOpenTabsContext ?? 20,
 			maxWorkspaceFiles: stateValues.maxWorkspaceFiles ?? 200,
-			openRouterUseMiddleOutTransform: stateValues.openRouterUseMiddleOutTransform,
+			openRouterUseMiddleOutTransform: stateValues.openRouterUseMiddleOutTransform ?? true,
 			browserToolEnabled: stateValues.browserToolEnabled ?? true,
 			telemetrySetting: stateValues.telemetrySetting || "unset",
 			showRooIgnoredFiles: stateValues.showRooIgnoredFiles ?? false,
@@ -1938,6 +1893,7 @@ export class ClineProvider
 			sharingEnabled,
 			organizationAllowList,
 			organizationSettingsVersion,
+			// Explicitly add condensing settings
 			condensingApiConfigId: stateValues.condensingApiConfigId,
 			customCondensingPrompt: stateValues.customCondensingPrompt,
 			codebaseIndexModels: stateValues.codebaseIndexModels ?? EMBEDDING_MODEL_PROFILES,
@@ -1957,9 +1913,12 @@ export class ClineProvider
 				codebaseIndexSearchMinScore: stateValues.codebaseIndexConfig?.codebaseIndexSearchMinScore,
 			},
 			profileThresholds: stateValues.profileThresholds ?? {},
+			// Add diagnostic message settings
 			includeDiagnosticMessages: stateValues.includeDiagnosticMessages ?? true,
 			maxDiagnosticMessages: stateValues.maxDiagnosticMessages ?? 50,
+			// Add includeTaskHistoryInEnhance setting
 			includeTaskHistoryInEnhance: stateValues.includeTaskHistoryInEnhance ?? true,
+			// Add remoteControlEnabled setting - get from cloud settings
 			remoteControlEnabled: (() => {
 				try {
 					const cloudSettings = CloudService.instance.getUserSettings()
@@ -1971,6 +1930,7 @@ export class ClineProvider
 					return false
 				}
 			})(),
+			// Add image generation settings
 			openRouterImageApiKey: stateValues.openRouterImageApiKey,
 			openRouterImageGenerationSelectedModel: stateValues.openRouterImageGenerationSelectedModel,
 		}
@@ -2392,12 +2352,7 @@ export class ClineProvider
 	// Modes
 
 	public async getModes(): Promise<{ slug: string; name: string }[]> {
-		try {
-			const customModes = await this.customModesManager.getCustomModes()
-			return [...DEFAULT_MODES, ...customModes].map(({ slug, name }) => ({ slug, name }))
-		} catch (error) {
-			return DEFAULT_MODES.map(({ slug, name }) => ({ slug, name }))
-		}
+		return DEFAULT_MODES.map((mode) => ({ slug: mode.slug, name: mode.name }))
 	}
 
 	public async getMode(): Promise<string> {
@@ -2412,12 +2367,12 @@ export class ClineProvider
 	// Provider Profiles
 
 	public async getProviderProfiles(): Promise<{ name: string; provider?: string }[]> {
-		const { listApiConfigMeta = [] } = await this.getState()
+		const { listApiConfigMeta } = await this.getState()
 		return listApiConfigMeta.map((profile) => ({ name: profile.name, provider: profile.apiProvider }))
 	}
 
 	public async getProviderProfile(): Promise<string> {
-		const { currentApiConfigName = "default" } = await this.getState()
+		const { currentApiConfigName } = await this.getState()
 		return currentApiConfigName
 	}
 
@@ -2468,7 +2423,7 @@ export class ClineProvider
 	}
 
 	private async getTaskProperties(): Promise<DynamicAppProperties & TaskProperties> {
-		const { language = "en", mode, apiConfiguration } = await this.getState()
+		const { language, mode, apiConfiguration } = await this.getState()
 
 		const task = this.getCurrentTask()
 		const todoList = task?.todoList

@@ -12,7 +12,6 @@ import type {
 	CloudUserInfo,
 	OrganizationAllowList,
 	ShareVisibility,
-	QueuedMessage,
 } from "@roo-code/types"
 
 import { GitCommit } from "../utils/git"
@@ -197,7 +196,6 @@ export interface ExtensionMessage {
 	messageTs?: number
 	context?: string
 	commands?: Command[]
-	queuedMessages?: QueuedMessage[]
 }
 
 export type ExtensionState = Pick<
@@ -221,10 +219,8 @@ export type ExtensionState = Pick<
 	| "alwaysAllowMcp"
 	| "alwaysAllowModeSwitch"
 	| "alwaysAllowSubtasks"
-	| "alwaysAllowFollowupQuestions"
 	| "alwaysAllowExecute"
 	| "alwaysAllowUpdateTodoList"
-	| "followupAutoApproveTimeoutMs"
 	| "allowedCommands"
 	| "deniedCommands"
 	| "allowedMaxRequests"
@@ -233,7 +229,6 @@ export type ExtensionState = Pick<
 	| "browserViewportSize"
 	| "screenshotQuality"
 	| "remoteBrowserEnabled"
-	| "cachedChromeHostUrl"
 	| "remoteBrowserHost"
 	// | "enableCheckpoints" // Optional in GlobalSettings, required here.
 	| "ttsEnabled"
@@ -279,13 +274,12 @@ export type ExtensionState = Pick<
 	| "maxDiagnosticMessages"
 	| "remoteControlEnabled"
 	| "openRouterImageGenerationSelectedModel"
-	| "includeTaskHistoryInEnhance"
 > & {
 	version: string
 	clineMessages: ClineMessage[]
 	currentTaskItem?: HistoryItem
 	currentTaskTodos?: TodoItem[] // Initial todos for the current task
-	apiConfiguration: ProviderSettings
+	apiConfiguration?: ProviderSettings
 	uriScheme?: string
 	shouldShowAnnouncement: boolean
 
@@ -334,13 +328,6 @@ export type ExtensionState = Pick<
 	profileThresholds: Record<string, number>
 	hasOpenedModeSelector: boolean
 	openRouterImageApiKey?: string
-	openRouterUseMiddleOutTransform?: boolean
-	messageQueue?: QueuedMessage[]
-	lastShownAnnouncementId?: string
-	apiModelId?: string
-	mcpServers?: McpServer[]
-	hasSystemPromptOverride?: boolean
-	mdmCompliant?: boolean
 }
 
 export interface ClineSayTool {

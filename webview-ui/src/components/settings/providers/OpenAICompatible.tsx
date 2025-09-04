@@ -48,6 +48,17 @@ export const OpenAICompatible = ({
 		return Object.entries(headers)
 	})
 
+	// 2) 新增：当切换配置文件时，同步本地 customHeaders
+	useEffect(() => {
+		const propHeaders = apiConfiguration?.openAiHeaders || {}
+		const next = Object.entries(propHeaders)
+
+		// 只有在确实不同的时候才同步，避免触发写回 effect
+		if (JSON.stringify(customHeaders) !== JSON.stringify(next)) {
+			setCustomHeaders(next)
+		}
+	}, [apiConfiguration?.openAiHeaders]) // ← 关键依赖
+
 	const handleAddCustomHeader = useCallback(() => {
 		// Only update the local state to show the new row in the UI.
 		setCustomHeaders((prev) => [...prev, ["", ""]])
